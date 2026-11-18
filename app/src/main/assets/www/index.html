@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ошпази AI</title>
+<meta name="theme-color" content="#C4532D">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF3E8;--card:#FFFDF8;--terra:#C4532D;--terra2:#8F3519;--terraL:#F7E1D6;--olive:#5E7A2E;--oliveL:#E6EDD6;--saff:#E9A23B;--saffL:#FBEBCF;--ink:#2E2318;--muted:#7A6A5A;--line:#EADCCB}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font:600 15px/1.45 Nunito,'Segoe UI',Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:20;background:var(--terra);color:#FFF6EE;padding:calc(10px + env(safe-area-inset-top)) 16px 18px;border-radius:0 0 26px 26px;box-shadow:0 6px 20px rgba(143,53,25,.25)}
+header .top{display:flex;align-items:center;gap:10px}
+header .logo{width:38px;height:38px;border-radius:12px;background:#FFF6EE;display:flex;align-items:center;justify-content:center;font-size:22px}
+header h1{font-size:21px;font-weight:900;letter-spacing:.2px;flex:1}
+header h1 small{font-size:11px;background:var(--saff);color:var(--ink);padding:2px 7px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.aistat{font-size:12px;background:rgba(255,246,238,.18);padding:6px 10px;border-radius:999px;cursor:pointer;white-space:nowrap}
+main{padding:16px 16px 110px;max-width:640px;margin:0 auto}
+h2{font-size:19px;font-weight:900;margin:22px 0 10px}
+h2 .sub{font-size:13px;color:var(--muted);font-weight:700;margin-left:6px}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 2px 10px rgba(46,35,24,.05)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-radius:16px;padding:14px 16px;font-weight:800;font-size:15.5px;background:var(--terra);color:#FFF6EE;cursor:pointer}
+.btn:disabled{opacity:.45}
+.btn.olive{background:var(--olive)}.btn.saff{background:var(--saff);color:var(--ink)}
+.btn.light{background:var(--terraL);color:var(--terra2)}.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.sm{width:auto;padding:9px 14px;font-size:13.5px;border-radius:12px}
+.row{display:flex;gap:10px;align-items:center}
+.hero{background:linear-gradient(135deg,#FFF8EE,#FBE7D4);border:1px solid var(--line);border-radius:26px;padding:18px;position:relative;overflow:hidden}
+.hero h3{font-size:22px;font-weight:900;line-height:1.15;max-width:72%}
+.hero p{color:var(--muted);margin-top:6px;max-width:70%}
+.hero .pot{position:absolute;right:-6px;top:6px;width:120px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stat{background:var(--card);border-radius:16px;padding:10px;text-align:center;border:1px solid var(--line)}
+.stat b{display:block;font-size:22px;font-weight:900;color:var(--terra)}
+.stat span{font-size:11.5px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-weight:700;font-size:14px;user-select:none}
+.chip.on{background:var(--olive);border-color:var(--olive);color:#fff}
+.chip .e{font-size:17px}
+.cat{font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+.have{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.have .chip{background:var(--oliveL);border-color:transparent;color:var(--olive);padding:6px 10px}
+.rc{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:10px;cursor:pointer;margin-bottom:10px}
+.rc .pl{width:84px;height:84px;flex:none}
+.rc h4{font-size:16.5px;font-weight:900}
+.rc .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+.bar{height:7px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:7px}
+.bar i{display:block;height:100%;background:var(--olive);border-radius:9px}
+.tag{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:8px}
+.t-ok{background:var(--oliveL);color:var(--olive)}.t-miss{background:var(--saffL);color:#8A5A0B}.t-ai{background:var(--terraL);color:var(--terra2)}
+.miss{font-size:12.5px;color:#8A5A0B;margin-top:3px}
+.seg{display:flex;background:var(--terraL);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;border:none;background:transparent;padding:9px 6px;border-radius:11px;font-weight:800;cursor:pointer;color:var(--terra2)}
+.seg button.on{background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+input[type=text],input[type=search],input[type=number],textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card);outline:none}
+input:focus,textarea:focus{border-color:var(--terra)}
+label.f{display:block;font-size:12.5px;font-weight:800;color:var(--muted);margin:12px 0 6px;letter-spacing:.3px}
+.ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed #D9C2AA;border-radius:22px;background:#FFF9F1;aspect-ratio:4/3;cursor:pointer;overflow:hidden;color:var(--muted);font-weight:800;text-align:center;padding:10px}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.scan{position:absolute;left:0;right:0;height:3px;background:var(--saff);box-shadow:0 0 18px var(--saff);animation:scan 1.6s ease-in-out infinite}
+@keyframes scan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
+.detail .big{width:100%;aspect-ratio:1.5;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 55%,#FBE2CC,#FBF3E8 70%);border-radius:26px}
+.detail .big svg{width:62%}
+.ing{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.ing:last-child{border:none}
+.ing .e{font-size:20px;width:28px;text-align:center}
+.ing .n{flex:1}
+.ing .q{font-weight:900}
+.ing.no .n{color:#8A5A0B}
+.step{display:flex;gap:12px;padding:10px 0}
+.step .no{width:30px;height:30px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none}
+.cook{position:fixed;inset:0;z-index:60;background:var(--ink);color:#FFF6EE;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom))}
+.cook .prog{display:flex;gap:5px;margin:12px 0 26px}
+.cook .prog i{flex:1;height:5px;border-radius:5px;background:rgba(255,246,238,.2)}
+.cook .prog i.on{background:var(--saff)}
+.cook .txt{font-size:26px;font-weight:800;line-height:1.35;flex:1}
+.cook .timer{font-size:64px;font-weight:900;text-align:center;letter-spacing:2px;color:var(--saff);margin:14px 0}
+.cook .btn.ghost{color:#FFF6EE;border-color:rgba(255,246,238,.3)}
+.list .li{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.list .li .bx{width:24px;height:24px;border-radius:8px;border:2px solid var(--olive);flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+.list .li.done .bx{background:var(--olive)}
+.list .li.done span{text-decoration:line-through;color:var(--muted)}
+.list .li .x{margin-left:auto;border:none;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.note{background:var(--saffL);border-radius:16px;padding:12px 14px;font-size:13.5px;color:#6E4A0A}
+.warn{background:#FCE4DA;border-radius:14px;padding:12px 14px;font-size:13.5px;color:#8F3519;line-height:1.5}
+.bubble{padding:12px 14px;border-radius:18px;margin:8px 0;max-width:88%;white-space:pre-wrap}
+.bubble.me{background:var(--terra);color:#fff;margin-left:auto;border-bottom-right-radius:6px}
+.bubble.ai{background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+nav button{border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:800;color:var(--muted);cursor:pointer;min-width:58px;position:relative}
+nav button .i{font-size:22px;filter:grayscale(1);opacity:.7}
+nav button.on{color:var(--terra)}
+nav button.on .i{filter:none;opacity:1}
+nav .dot{position:absolute;top:-2px;right:12px;background:var(--terra);color:#fff;font-size:10px;border-radius:9px;padding:0 5px;min-width:17px}
+#ov{position:fixed;inset:0;z-index:50;background:rgba(46,35,24,.45);display:none;align-items:flex-end}
+#ov.show{display:flex}
+#sheet{background:var(--bg);width:100%;max-width:640px;margin:0 auto;border-radius:26px 26px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+#toast{position:fixed;left:50%;top:18px;transform:translate(-50%,-80px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;z-index:90;transition:.3s;font-size:14px;max-width:86vw;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+.back{border:none;background:var(--card);border:1px solid var(--line);width:40px;height:40px;border-radius:14px;font-size:18px;cursor:pointer}
+.empty{text-align:center;padding:24px 10px;color:var(--muted)}
+.empty .e{font-size:46px}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="logo">🍲</div><h1>Ошпази <small>AI</small></h1><span class="aistat" id="aist" onclick="aiSettings()">⚪ ЗС ⚙️</span></div></header>
+<main id="app"></main>
+<nav id="nav"></nav>
+<div id="ov" onclick="if(event.target===this)closeSheet()"><div id="sheet"></div></div>
+<div id="toast"></div>
+<script>
+/* ===================== МАҲСУЛОТ ===================== */
+const ING={
+ piyoz:['Пиёз','🧅','veg'],sabzi:['Сабзӣ','🥕','veg'],kartoshka:['Картошка','🥔','veg'],pomidor:['Помидор','🍅','veg'],bodiring:['Бодиринг','🥒','veg'],
+ bulgari:['Қаламфури булғорӣ','🫑','veg'],bodinjon:['Бодинҷон','🍆','veg'],karam:['Карам','🥬','veg'],sir:['Сир','🧄','veg'],kabudi:['Кабудӣ','🌿','veg'],qalamfur:['Қаламфури тез','🌶️','veg'],
+ gusht:['Гӯшт','🥩','prot'],murgh:['Мурғ','🍗','prot'],tuxm:['Тухм','🥚','prot'],shir:['Шир','🥛','prot'],chakka:['Чакка','🥣','prot'],qurut:['Қурут','⚪','prot'],maska:['Маска','🧈','prot'],
+ birinj:['Биринҷ','🍚','grain'],ord:['Орд','🌾','grain'],non:['Нон','🫓','grain'],nakhud:['Нахӯд','🫘','grain'],makaron:['Макарон','🍝','grain'],
+ ravghan:['Равған','🫒','pan'],zira:['Зира','🌰','pan'],shakar:['Шакар','🍬','pan']
+};
+const CATS={veg:'Сабзавот',prot:'Гӯшт, шир ва тухм',grain:'Ғалла ва нон',pan:'Равған ва ҳанут'};
+const I=id=>ING[id]||(String(id).startsWith('x_')?[String(id).slice(2),'🥄','pan']:[id,'🥄','pan']);
+/* ===================== ДАСТУРҲО =====================
+   ings: "id миқдор воҳид" бо | ; * — ихтиёрӣ. art: намуди расм ва рангҳо */
+const RECIPES=[
+ {id:'palov',n:'Оши палов',d:'Шоҳи дастурхони тоҷикӣ: биринҷ, гӯшт ва сабзӣ дар дег.',t:90,s:6,art:['rice','#E7A64A','#D2691E','#8B4A2B'],
+  ings:'gusht 500 г|birinj 500 г|sabzi 500 г|piyoz 2 дона|ravghan 150 мл|*nakhud 100 г|*zira 1 қошуқча|*sir 1 сар',
+  steps:[['Гӯштро калон-калон пора кунед, пиёзро ҳалқа ва сабзиро дароз-дароз буред.',10],['Равғанро дар дег хуб гарм кунед ва гӯштро то сурх шудан бирён кунед.',10],['Пиёз ва сабзиро илова карда, 10 дақиқа бирён кунед.',10],['Об рехта, намак ва зира андозед. 20 дақиқа дар оташи миёна ҷӯшонед — ин зирвак аст.',20],['Биринҷи шусташударо болои зирвак ҳамвор кунед. Об 1,5 см болотар аз биринҷ бошад.',5],['Сарпӯшро пӯшида, дар оташи паст 25 дақиқа дам диҳед. Баъд омехта кунед.',25]]},
+ {id:'shurbo',n:'Шӯрбо',d:'Шӯрбои гарми гӯштӣ бо сабзавот — барои рӯзҳои хунук.',t:80,s:5,art:['soup','#D9822B','#E8C07A','#6B8E23'],
+  ings:'gusht 400 г|kartoshka 4 дона|sabzi 2 дона|piyoz 1 дона|*pomidor 2 дона|*bulgari 1 дона|*kabudi 1 даста',
+  steps:[['Гӯштро бо 2,5 литр оби хунук ба дег андохта, ҷӯшонед ва кафкашро гиред.',40],['Пиёз ва сабзии калон-калон буридаро илова кунед.',10],['Картошкаро ба чор ҳисса бурида андозед ва намак занед.',20],['Помидор ва қаламфури булғориро илова карда, 5 дақиқа ҷӯшонед.',5],['Ба косаҳо кашида, болояш кабудӣ пошед.',0]]},
+ {id:'qurutob',n:'Қурутоб',d:'Таоми миллии мо: нон, оби қурут ва сабзавоти тоза.',t:40,s:4,art:['bread','#F3EBDD','#C9A46A','#4E8B3A'],
+  ings:'qurut 200 г|non 2 дона|piyoz 2 дона|*pomidor 2 дона|*bodiring 2 дона|*ravghan 80 мл|*kabudi 1 даста',
+  steps:[['Қурутро дар 1 литр оби гарм тар карда, то пурра ҳал шуданаш молед.',30],['Пиёзро ҳалқа-ҳалқа бурида, дар равған то тиллоранг бирён кунед.',5],['Нонро дар табақи калон пора-пора кунед ва оби қурутро болояш резед.',0],['Болояш пиёзи бирён, помидор, бодиринг ва кабудӣ гузоред. Бо даст хӯред!',0]]},
+ {id:'sambusa',n:'Самбӯса',d:'Самбӯсаи хонагӣ бо гӯшт ва пиёз, тилло-тилло.',t:80,s:6,art:['dough','#E5B567','#C98B3A','#8B5A2B'],
+  ings:'ord 500 г|gusht 400 г|piyoz 3 дона|*ravghan 50 мл|*zira 1 қошуқча',
+  steps:[['Орд, об, намак ва каме равғанро омехта карда, хамири сахт созед. 20 дақиқа монед.',20],['Гӯшт ва пиёзро майда буред, бо намак, қаламфур ва зира омехта кунед.',10],['Хамирро тунук паҳн карда, порчаҳои чоркунҷа буред.',10],['Ба ҳар порча қийма гузошта, секунҷа ё чоркунҷа печонед.',10],['Дар духовка дар 200° то 30 дақиқа, то тиллоранг шуданаш пазед.',30]]},
+ {id:'mantu',n:'Манту',d:'Манту дар буғ — нарм, серобу шарбатдор.',t:90,s:5,art:['dough','#F1E4CC','#D8C29A','#7A4A2A'],
+  ings:'ord 500 г|gusht 500 г|piyoz 4 дона|*ravghan 30 мл|*qalamfur 1 дона',
+  steps:[['Хамири мулоими бетухм созед ва 20 дақиқа зери дастмол монед.',20],['Гӯшт ва пиёзро майда-майда буред, намак ва қаламфур занед.',10],['Хамирро тунук паҳн карда, давраҳо буред. Қийма гузошта, канораҳоро ба ҳам пайваст кунед.',15],['Табақҳои мантупазро равған молида, мантуро гузоред.',5],['Дар буғ 40 дақиқа пазед.',40]]},
+ {id:'ugro',n:'Оши угро',d:'Угроаш хонагӣ, шӯрбояш гарм — бӯи кӯдакӣ.',t:70,s:5,art:['soup','#C97B3B','#F2DCA8','#5F8B3A'],
+  ings:'ord 300 г|tuxm 1 дона|gusht 300 г|piyoz 1 дона|*sabzi 1 дона|*kartoshka 2 дона|*pomidor 2 дона',
+  steps:[['Орд, тухм, намак ва каме обро омехта карда, хамири сахт созед.',15],['Хамирро хеле тунук паҳн карда, борик-борик буред ва хушк кунед.',15],['Гӯштро бирён карда, пиёз, сабзӣ ва помидорро илова кунед.',10],['Об рехта, картошкаро андозед ва 20 дақиқа ҷӯшонед.',20],['Угроро андохта, 7 дақиқа пазед.',7]]},
+ {id:'shakarob',n:'Шакароб',d:'Салати тобистонаи помидору пиёз — бо палов хеле мувофиқ.',t:10,s:4,art:['salad','#E0452B','#F6E7D8','#4E8B3A'],
+  ings:'pomidor 4 дона|piyoz 1 дона|*qalamfur 1 дона|*kabudi 1 даста|*bodiring 1 дона',
+  steps:[['Пиёзро нимҳалқа бурида, бо намак каме молед.',3],['Помидорро тунук-тунук буред.',3],['Ҳамаро омехта карда, қаламфури тез ва кабудӣ илова кунед.',2]]},
+ {id:'dimlama',n:'Димлама',d:'Ҳама сабзавот ва гӯшт дар як дег, дар шарбати худ.',t:100,s:6,art:['stew','#C8642F','#E9B35A','#6E8B3D'],
+  ings:'gusht 600 г|kartoshka 5 дона|piyoz 2 дона|sabzi 2 дона|*karam 1/2 сар|*pomidor 3 дона|*bulgari 2 дона|*bodinjon 1 дона',
+  steps:[['Гӯштро пора-пора карда, ба таги дег гузоред ва намак занед.',5],['Қабат-қабат пиёз, сабзӣ, бодинҷон, помидор, қаламфур ва картошка гузоред.',15],['Болояш баргҳои калони карамро пӯшонед.',5],['Сарпӯшро зич пӯшида, дар оташи паст 1,5 соат дам диҳед. Об лозим нест.',90]]},
+ {id:'laghmon',n:'Лағмон',d:'Угроаш дароз, қаламфураш ширин — таоми сершавқ.',t:90,s:4,art:['noodle','#E2A548','#D04A2A','#4E8B3A'],
+  ings:'ord 400 г|gusht 400 г|piyoz 1 дона|bulgari 2 дона|*pomidor 2 дона|*sir 3 тӯби|*sabzi 1 дона',
+  steps:[['Хамири мулоим созед, 30 дақиқа монед ва угроҳои дароз кашед.',40],['Гӯштро борик бурида, дар равған бирён кунед.',10],['Пиёз, қаламфур, помидор ва сирро илова карда, каме об рехта, 15 дақиқа пазед.',15],['Угроро дар оби намакин 5 дақиқа ҷӯшонед.',5],['Угроро ба коса гузошта, болояш вараҷаро резед.',0]]},
+ {id:'tuxmbiryon',n:'Тухмбирён бо помидор',d:'Ноништаи зуд — дар 15 дақиқа.',t:15,s:2,art:['egg','#F7D25A','#E0452B','#4E8B3A'],
+  ings:'tuxm 4 дона|pomidor 2 дона|*piyoz 1 дона|*ravghan 2 қошуқ|*kabudi 1 даста',
+  steps:[['Пиёзро дар равған 2 дақиқа бирён кунед.',2],['Помидори буридаро илова карда, 5 дақиқа пазед.',5],['Тухмҳоро шикаста, намак занед ва сарпӯшида 4 дақиқа пазед.',4],['Бо кабудӣ ва нони гарм пешкаш кунед.',0]]},
+ {id:'shirbirinj',n:'Ширбиринҷ',d:'Шӯлаи ширии ширин — ноништаи кӯдакон.',t:40,s:4,art:['sweet','#FAF3E6','#E9C98F','#C98B3A'],
+  ings:'birinj 200 г|shir 1 литр|*shakar 3 қошуқ|*maska 30 г',
+  steps:[['Биринҷро шуста, дар 300 мл об 10 дақиқа ҷӯшонед.',10],['Ширро илова карда, дар оташи паст доимо омехта кунед.',25],['Шакар ва каме намак андозед.',2],['Ба коса кашида, болояш маска гузоред.',0]]},
+ {id:'bodinjon',n:'Бодинҷони бирён',d:'Бодинҷон бо сир ва помидор — хӯриш ё газак.',t:30,s:3,art:['salad','#5B3A6E','#E0452B','#4E8B3A'],
+  ings:'bodinjon 3 дона|sir 3 тӯби|*pomidor 2 дона|*ravghan 80 мл|*kabudi 1 даста',
+  steps:[['Бодинҷонро давра-давра бурида, намак пошед ва 10 дақиқа монед.',10],['Дар равған ду тарафашро то нарм шудан бирён кунед.',12],['Болояш сири майдакарда, помидор ва кабудӣ гузоред.',3]]},
+ {id:'kartoshka',n:'Картошкабирён',d:'Картошкаи бирён бо пиёз — содда ва дӯстдошта.',t:30,s:3,art:['fry','#E8B04A','#C9822E','#4E8B3A'],
+  ings:'kartoshka 6 дона|piyoz 1 дона|*ravghan 80 мл|*tuxm 2 дона|*kabudi 1 даста',
+  steps:[['Картошкаро тоза карда, дароз-дароз буред.',8],['Равғанро гарм карда, картошкаро андозед ва 15 дақиқа бирён кунед.',15],['Пиёзро илова карда, намак занед ва 5 дақиқа дигар бирён кунед.',5],['Агар хоҳед, тухм шикаста, болояш кабудӣ пошед.',3]]},
+ {id:'chakka',n:'Чакка бо кабудӣ',d:'Чаккаи хунук бо бодиринг ва сир — дар 5 дақиқа.',t:5,s:3,art:['sweet','#F6F2EA','#DDE6CF','#4E8B3A'],
+  ings:'chakka 400 г|*bodiring 2 дона|*kabudi 1 даста|*sir 1 тӯби',
+  steps:[['Бодиринг ва кабудиро майда буред, сирро молед.',3],['Ҳамаро бо чакка ва каме намак омехта кунед. Бо нон пешкаш кунед.',2]]},
+ {id:'shavla',n:'Шавла',d:'Биринҷи нармҷӯш бо гӯшт ва сабзӣ — хӯроки сабук.',t:60,s:5,art:['rice','#E9C27A','#D2691E','#8B4A2B'],
+  ings:'birinj 400 г|gusht 300 г|sabzi 2 дона|piyoz 1 дона|*ravghan 80 мл',
+  steps:[['Гӯштро майда бурида, дар равған бирён кунед.',10],['Пиёз ва сабзиро илова карда, 7 дақиқа бирён кунед.',7],['1,2 литр об рехта, намак занед ва ҷӯшонед.',8],['Биринҷро андохта, гоҳ-гоҳ омехта карда, 30 дақиқа то ғафс шуданаш пазед.',30]]},
+ {id:'shurnakhud',n:'Шӯрнахӯд',d:'Нахӯди пухта бо пиёз ва кабудӣ — газаки кӯча.',t:70,s:4,art:['bean','#D9B26A','#F6E7D8','#4E8B3A'],
+  ings:'nakhud 300 г|piyoz 1 дона|*kabudi 1 даста|*qalamfur 1 дона',
+  steps:[['Нахӯдро аз шаб дар об тар кунед (8 соат).',0],['Дар оби тоза 1 соат то нарм шуданаш ҷӯшонед.',60],['Пиёзро нимҳалқа бурида, бо намак ва каме сирко молед.',3],['Нахӯдро бо пиёз, кабудӣ ва қаламфур омехта кунед.',2]]},
+ {id:'shurbomurgh',n:'Шӯрбои мурғ',d:'Шӯрбои сабуки мурғ — барои бемор ва кӯдак.',t:60,s:5,art:['soup','#E9B95A','#F4E6C4','#4E8B3A'],
+  ings:'murgh 600 г|kartoshka 3 дона|sabzi 1 дона|piyoz 1 дона|*kabudi 1 даста|*makaron 100 г',
+  steps:[['Мурғро бо 2,5 литр об ҷӯшонед, кафкро гиред.',30],['Сабзӣ, пиёз ва картошкаро илова кунед, намак занед.',15],['Макаронро андохта, 8 дақиқа ҷӯшонед.',8],['Бо кабудӣ пешкаш кунед.',0]]}
+];
+function parseIngs(s){return s.split('|').map(x=>{const opt=x[0]==='*';x=x.replace(/^\*/,'');const p=x.split(' ');return {id:p[0],q:p[1],u:p.slice(2).join(' '),opt}})}
+RECIPES.forEach(r=>r.I=parseIngs(r.ings));
+
+/* ===================== ҲОЛАТ ===================== */
+const KEY='oshpaz';
+let S=Object.assign({have:[],shop:[],fav:[],ai:[],cooked:0,used:0,aiUrl:'',hist:[],chat:[]},JSON.parse(localStorage.getItem(KEY)||'{}'));
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Хотира пур аст')}}
+let tab='home',view=null,R=null,srv=null,q='',photo=null,scanning=false,aiBusy=false,cookSt=null,timer=null,chatBusy=false;
+let AI=null,AIimg=false,AIKIND=null,DL=null;
+
+/* ===================== ЁРИРАСОН ===================== */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove('show'),2800)}
+function openSheet(h){document.getElementById('sheet').innerHTML=h;document.getElementById('ov').classList.add('show')}
+function closeSheet(){document.getElementById('ov').classList.remove('show')}
+const uid=()=>Math.random().toString(36).slice(2,9);
+function readImg(file,max){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res({url:c.toDataURL('image/jpeg',.85),w:c.width,h:c.height})};im.onerror=rej;im.src=e.target.result};r.onerror=rej;r.readAsDataURL(file)})}
+function dataUrlToBlob(u){const [h,b]=u.split(',');const bin=atob(b);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:h.slice(5,h.indexOf(';'))})}
+function fmtT(m){return m>=60?(Math.floor(m/60)+' соат'+(m%60?' '+m%60+' дақ.':'')):m+' дақ.'}
+function scaleQ(q,k){if(!q)return '';if(q.includes('/')){const [a,b]=q.split('/').map(Number);q=a/b}const n=parseFloat(String(q).replace(',','.'));if(isNaN(n))return q;const v=n*k;return v>=10?String(Math.round(v)):String(Math.round(v*2)/2).replace('.',',')}
+
+/* ===================== РАСМИ ТАОМ (SVG) ===================== */
+function rnd(seed){let s=0;for(const c of seed)s=(s*31+c.charCodeAt(0))>>>0;return()=>{s=(s*1103515245+12345)>>>0;return (s>>>8)/16777216}}
+function plateSVG(r){
+  const [type,c1,c2,c3]=r.art||['stew','#D9822B','#E8C07A','#6B8E23'];const R=rnd(r.id||r.n);let g='';
+  const bowl=['soup','noodle','sweet'].includes(type);
+  g+=`<ellipse cx="100" cy="112" rx="88" ry="18" fill="rgba(46,35,24,.10)"/>`;
+  if(bowl){g+=`<path d="M18 92 Q100 190 182 92 Z" fill="#FFFDF8" stroke="#EADCCB" stroke-width="3"/><path d="M30 96 Q100 168 170 96" fill="none" stroke="#C4532D" stroke-width="5" opacity=".75"/><ellipse cx="100" cy="92" rx="82" ry="26" fill="#FFFDF8" stroke="#EADCCB" stroke-width="3"/><ellipse cx="100" cy="92" rx="72" ry="20" fill="${c1}"/>`}
+  else{g+=`<ellipse cx="100" cy="100" rx="92" ry="44" fill="#FFFDF8" stroke="#EADCCB" stroke-width="3"/><ellipse cx="100" cy="100" rx="76" ry="34" fill="none" stroke="#C4532D" stroke-width="3" stroke-dasharray="2 7" opacity=".6"/>`}
+  const pts=n=>Array.from({length:n},()=>{const a=R()*6.28,d=Math.sqrt(R());return [100+Math.cos(a)*d*(bowl?62:58),(bowl?92:94)+Math.sin(a)*d*(bowl?15:22)]});
+  if(type==='rice'){g+=`<ellipse cx="100" cy="92" rx="64" ry="28" fill="${c1}"/>`;pts(60).forEach(([x,y])=>g+=`<ellipse cx="${x}" cy="${y-6}" rx="3.2" ry="1.6" fill="#FFF3D6" transform="rotate(${R()*180} ${x} ${y-6})"/>`);pts(14).forEach(([x,y])=>g+=`<rect x="${x}" y="${y-8}" width="12" height="3" rx="1.5" fill="${c2}" transform="rotate(${R()*180} ${x} ${y-8})"/>`);g+=`<ellipse cx="88" cy="78" rx="13" ry="9" fill="${c3}"/><ellipse cx="114" cy="80" rx="11" ry="8" fill="${c3}"/>`}
+  else if(type==='soup'){pts(9).forEach(([x,y])=>g+=`<rect x="${x-6}" y="${y-5}" width="12" height="9" rx="3" fill="${c2}"/>`);pts(7).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="4" fill="#E2873A"/>`);pts(10).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="2" fill="${c3}"/>`)}
+  else if(type==='noodle'){for(let i=0;i<9;i++){const y=80+i*3.2;g+=`<path d="M${40+R()*10} ${y} Q70 ${y-8} 100 ${y} T${155+R()*10} ${y}" fill="none" stroke="#F6D48A" stroke-width="3.2" stroke-linecap="round"/>`}pts(8).forEach(([x,y])=>g+=`<rect x="${x-5}" y="${y-6}" width="10" height="6" rx="2" fill="${c2}"/>`);pts(8).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y-3}" r="2.4" fill="${c3}"/>`)}
+  else if(type==='sweet'){pts(20).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="2.2" fill="${c2}" opacity=".8"/>`);g+=`<rect x="90" y="84" width="20" height="10" rx="3" fill="${c3}" opacity=".85"/>`}
+  else if(type==='bread'){g+=`<ellipse cx="100" cy="96" rx="66" ry="28" fill="${c1}"/>`;pts(9).forEach(([x,y])=>g+=`<path d="M${x-12} ${y} q6 -10 18 -4 q6 6 -2 10 q-10 4 -16 -6z" fill="${c2}"/>`);pts(12).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y-2}" r="3" fill="#E0452B"/>`);pts(14).forEach(([x,y])=>g+=`<ellipse cx="${x}" cy="${y-3}" rx="4" ry="1.6" fill="${c3}"/>`)}
+  else if(type==='dough'){const P=[[66,92],[100,82],[134,92],[82,108],[118,108]];P.forEach(([x,y])=>g+=`<path d="M${x-20} ${y+8} L${x} ${y-16} L${x+20} ${y+8} Z" fill="${c1}" stroke="${c2}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="${x}" cy="${y}" r="1.6" fill="${c3}"/>`)}
+  else if(type==='salad'){pts(12).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y-2}" r="9" fill="${c1}" stroke="#FFFDF8" stroke-width="1.5"/>`);pts(10).forEach(([x,y])=>g+=`<path d="M${x-8} ${y} q8 -7 16 0" fill="none" stroke="${c2}" stroke-width="3" stroke-linecap="round"/>`);pts(12).forEach(([x,y])=>g+=`<ellipse cx="${x}" cy="${y-4}" rx="4" ry="1.8" fill="${c3}" transform="rotate(${R()*180} ${x} ${y-4})"/>`)}
+  else if(type==='egg'){[[76,92],[118,88],[98,108]].forEach(([x,y])=>g+=`<ellipse cx="${x}" cy="${y}" rx="22" ry="13" fill="#FFFFFF" stroke="#E8D9C4" stroke-width="2"/><circle cx="${x}" cy="${y-2}" r="7" fill="${c1}"/>`);pts(8).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="4" fill="${c2}"/>`);pts(10).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="1.8" fill="${c3}"/>`)}
+  else if(type==='fry'){pts(22).forEach(([x,y])=>g+=`<rect x="${x-9}" y="${y-3}" width="18" height="5" rx="2.5" fill="${R()>.5?c1:c2}" transform="rotate(${R()*180} ${x} ${y})"/>`);pts(8).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="1.8" fill="${c3}"/>`)}
+  else if(type==='bean'){pts(40).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y-2}" r="4.2" fill="${c1}" stroke="#B88C45" stroke-width=".8"/>`);pts(8).forEach(([x,y])=>g+=`<path d="M${x-7} ${y} q7 -6 14 0" fill="none" stroke="#FFFDF8" stroke-width="2.4"/>`);pts(8).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="1.8" fill="${c3}"/>`)}
+  else{pts(12).forEach(([x,y])=>g+=`<rect x="${x-8}" y="${y-6}" width="16" height="11" rx="4" fill="${R()>.5?c1:c2}"/>`);pts(10).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="2.2" fill="${c3}"/>`)}
+  if(!bowl&&type!=='bread'&&type!=='rice')g+='';
+  return `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(r.n)}">${g}</svg>`;
+}
+const POT=`<svg viewBox="0 0 120 110" class="pot" aria-hidden="true"><path d="M36 18c-4-8 6-10 2-18M58 16c-4-8 6-10 2-18M80 18c-4-8 6-10 2-18" stroke="#E9A23B" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/><ellipse cx="60" cy="34" rx="48" ry="9" fill="#8F3519"/><path d="M14 36h92l-6 44q-2 18-40 18t-40-18z" fill="#C4532D"/><path d="M20 52h80" stroke="#E9A23B" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/><rect x="2" y="44" width="16" height="7" rx="3.5" fill="#8F3519"/><rect x="102" y="44" width="16" height="7" rx="3.5" fill="#8F3519"/><ellipse cx="60" cy="28" rx="10" ry="4" fill="#8F3519"/></svg>`;
+
+/* ===================== МУВОФИҚАТ ===================== */
+function matchAll(){
+  const have=new Set(S.have);
+  return [...RECIPES,...S.ai].map(r=>{const req=r.I.filter(x=>!x.opt);const hv=req.filter(x=>have.has(x.id)).length;const miss=req.filter(x=>!have.has(x.id));const opt=r.I.filter(x=>x.opt&&have.has(x.id)).length;return {r,score:req.length?hv/req.length:0,miss,opt}})
+  .sort((a,b)=>b.score-a.score||a.miss.length-b.miss.length||b.opt-a.opt);
+}
+function recCard(m){const r=m.r;const ok=m.miss.length===0;
+  return `<div class="rc" onclick="openRec('${r.id}')"><div class="pl">${plateSVG(r)}</div><div style="flex:1;min-width:0">
+  <h4>${esc(r.n)} ${r.ai?'<span class="tag t-ai">ЗС</span>':''}</h4><div class="meta">⏱ ${fmtT(r.t)} · 🍽 ${r.s} нафар</div>
+  ${S.have.length?`<div class="bar"><i style="width:${Math.round(m.score*100)}%"></i></div>${ok?'<span class="tag t-ok" style="margin-top:6px">✓ Ҳама чиз ҳаст</span>':`<div class="miss">Намерасад: ${m.miss.map(x=>I(x.id)[0].toLowerCase()).join(', ')}</div>`}`:`<div class="meta" style="margin-top:4px">${esc(r.d)}</div>`}</div></div>`}
+
+/* ===================== ЭКРАНҲО ===================== */
+function home(){
+  const M=matchAll(),ready=M.filter(m=>m.miss.length===0),near=M.filter(m=>m.miss.length>0&&m.miss.length<=2&&m.score>0);
+  let h=`<div class="hero">${POT}<h3>Дар яхдон чӣ ҳаст?</h3><p>Акс гиред ё маҳсулотро интихоб кунед — ман мегӯям, чӣ пазем.</p>
+  <div class="stats"><div class="stat"><b>${S.have.length}</b><span>маҳсулот</span></div><div class="stat"><b>${ready.length}</b><span>метавонед пазед</span></div><div class="stat"><b>${S.used}</b><span>аз партов наҷот</span></div></div></div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="view='scan';render();scrollTo(0,0)">📷 Акси яхдон</button><button class="btn olive" onclick="view='pick';render();scrollTo(0,0)">✋ Интихоб</button></div>`;
+  if(S.have.length){h+=`<h2>Маҳсулоти ман <span class="sub">${S.have.length}</span></h2><div class="have">${S.have.map(id=>`<span class="chip" onclick="tg('${id}')"><span class="e">${I(id)[1]}</span>${I(id)[0]} ✕</span>`).join('')}</div>
+    <h2>✅ Метавонед пазед <span class="sub">${ready.length}</span></h2>${ready.length?ready.map(recCard).join(''):`<div class="card muted">Ҳоло ягон таом пурра нест — поёнтар бинед, чӣ намерасад, ё аз ЗС дастури нав пурсед.</div>`}
+    ${near.length?`<h2>🛒 Як-ду чиз намерасад <span class="sub">${near.length}</span></h2>${near.slice(0,6).map(recCard).join('')}`:''}
+    <button class="btn saff" style="margin-top:12px" onclick="tab='ai';render();scrollTo(0,0)">✨ ЗС аз ҳамин маҳсулот дастур созад</button>`}
+  else h+=`<h2>Таомҳои маъмул</h2>${RECIPES.slice(0,5).map(r=>recCard({r,score:0,miss:[],opt:0})).join('')}`;
+  return h;
+}
+function pickView(){
+  let h=`<div class="row" style="justify-content:space-between"><button class="back" onclick="view=null;render()">←</button><b>Маҳсулотро интихоб кунед</b><span style="width:40px"></span></div>
+  <p class="muted" style="margin-top:8px">Намак ва об ҳамеша ҳаст ҳисоб мешаванд.</p>`;
+  for(const [c,l] of Object.entries(CATS)){h+=`<div class="cat">${l}</div><div class="chips">${Object.entries(ING).filter(([,v])=>v[2]===c).map(([id,v])=>`<span class="chip ${S.have.includes(id)?'on':''}" onclick="tg('${id}',1)"><span class="e">${v[1]}</span>${v[0]}</span>`).join('')}</div>`}
+  h+=`<div style="position:sticky;bottom:86px;margin-top:20px"><button class="btn" onclick="view=null;render();scrollTo(0,0)">Тайёр — ${S.have.length} маҳсулот →</button></div>`;
+  return h;
+}
+function tg(id,stay){const i=S.have.indexOf(id);if(i>=0)S.have.splice(i,1);else S.have.push(id);save();render()}
+
+function scanView(){
+  let h=`<div class="row" style="justify-content:space-between"><button class="back" onclick="view=null;photo=null;render()">←</button><b>Акси яхдон ё мизи ошхона</b><span style="width:40px"></span></div>
+  <label class="ph" style="margin-top:14px">${photo?`<img src="${photo.url}" alt="">`:''}${scanning?'<div class="scan"></div>':''}${photo?'':'<span style="font-size:44px">📷</span>Акс гиред ё аз галерея интихоб кунед<span class="muted" style="font-weight:600;font-size:13px">Маҳсулот бояд намоён бошад</span>'}<input type="file" accept="image/*" capture="environment" onchange="pickPhoto(this)"></label>`;
+  if(!AI)h+=`<div class="warn" style="margin-top:12px">ЗС пайваст нест. Барои шинохтани маҳсулот аз акс дар ⚙️ сервери ЗС-ро пайваст кунед — ё маҳсулотро дастӣ интихоб кунед.</div><button class="btn olive" style="margin-top:10px" onclick="view='pick';render()">✋ Дастӣ интихоб кардан</button>`;
+  else if(AI&&!AIimg)h+=`<div class="warn" style="margin-top:12px">Ин ЗС аксро намебинад. Маҳсулотро дастӣ интихоб кунед.</div>`;
+  else h+=`<button class="btn" style="margin-top:12px" ${photo&&!scanning?'':'disabled'} onclick="scanPhoto()">${scanning?'⏳ ЗС маҳсулотро меҷӯяд…':'✨ Маҳсулотро шинос кун'}</button>
+  <div class="note" style="margin-top:12px">🔒 Акс танҳо барои шинохтан ба ЗС фиристода мешавад ва дар телефон нигоҳ дошта намешавад.</div>`;
+  return h;
+}
+async function pickPhoto(inp){const f=inp.files&&inp.files[0];if(!f)return;try{photo=await readImg(f,1024);render()}catch(e){toast('Аксро хонда натавонистем')}}
+async function scanPhoto(){
+  if(!photo||!AI)return;scanning=true;render();
+  const list=Object.entries(ING).map(([id,v])=>id+'='+v[0]).join(', ');
+  const prompt=`Дар акс маҳсулоти хӯрокворӣ (яхдон, миз ё бозор) ҳаст. Ҳамаи маҳсулоти намоёнро ёб.
+Танҳо аз ин рӯйхат id интихоб кун: ${list}.
+Агар маҳсулот дар рӯйхат набошад, онро ба "other" бо номи тоҷикӣ навис. Агар чизе намоён набошад ё акс хӯрок надошта бошад, рӯйхатҳоро холӣ гузор. Тахмин накун.
+Танҳо JSON: {"ids":["piyoz","tuxm"],"other":["зардолу"]}`;
+  try{const o=await AI.json(prompt,{images:[dataUrlToBlob(photo.url)],modelTier:'default'});
+    const ids=(o.ids||[]).filter(id=>ING[id]);const before=S.have.length;ids.forEach(id=>{if(!S.have.includes(id))S.have.push(id)});save();scanning=false;
+    const add=S.have.length-before;
+    openSheet(`<h1 style="font-size:22px">✨ ЗС ${ids.length} маҳсулот ёфт</h1>
+    <div class="chips" style="margin-top:12px">${ids.map(id=>`<span class="chip on"><span class="e">${I(id)[1]}</span>${I(id)[0]}</span>`).join('')||'<span class="muted">Маҳсулоти шинос ёфт нашуд.</span>'}</div>
+    ${(o.other||[]).length?`<p class="muted" style="margin-top:12px">Инчунин дида шуд: ${esc((o.other||[]).join(', '))}</p>`:''}
+    <p class="muted" style="margin-top:12px">Агар чизе хато бошад, дар «✋ Интихоб» ислоҳ кунед.</p>
+    <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="closeSheet();view='pick';render()">✋ Ислоҳ</button><button class="btn" onclick="closeSheet();view=null;photo=null;render();scrollTo(0,0)">Дастурҳо →</button></div>`);
+    if(add)toast('+'+add+' маҳсулот');render();
+  }catch(e){scanning=false;render();toast(e&&e.code==='rate_limited'?'ЗС банд аст, баъдтар санҷед':'ЗС аксро таҳлил карда натавонист')}
+}
+
+function recipesView(){
+  const list=[...S.ai,...RECIPES].filter(r=>!q||r.n.toLowerCase().includes(q.toLowerCase())||r.I.some(x=>I(x.id)[0].toLowerCase().includes(q.toLowerCase())));
+  const M=new Map(matchAll().map(m=>[m.r.id,m]));
+  return `<h2 style="margin-top:4px">Дастурҳо <span class="sub">${list.length}</span></h2>
+  <input type="search" placeholder="🔎 Ҷустуҷӯ: палов, картошка…" value="${esc(q)}" oninput="q=this.value;clearTimeout(window._q);window._q=setTimeout(()=>{render();const s=document.querySelector('input[type=search]');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)">
+  ${S.fav.length?`<div class="cat">❤️ Дӯстдошта</div>${S.fav.map(id=>findR(id)).filter(Boolean).map(r=>recCard(M.get(r.id)||{r,score:0,miss:[],opt:0})).join('')}<div class="cat">Ҳама</div>`:'<div style="height:12px"></div>'}
+  ${list.map(r=>recCard(M.get(r.id)||{r,score:0,miss:[],opt:0})).join('')}`;
+}
+function findR(id){return RECIPES.find(r=>r.id===id)||S.ai.find(r=>r.id===id)}
+function openRec(id){R=findR(id);if(!R)return;srv=R.s;view='rec';render();scrollTo(0,0)}
+function recView(){
+  const r=R,k=srv/r.s,have=new Set(S.have);const fav=S.fav.includes(r.id);
+  const miss=r.I.filter(x=>!x.opt&&!have.has(x.id));
+  return `<div class="detail"><div class="row" style="justify-content:space-between"><button class="back" onclick="view=null;render()">←</button><button class="back" onclick="toggleFav('${r.id}')">${fav?'❤️':'🤍'}</button></div>
+  <div class="big" style="margin-top:10px">${plateSVG(r)}</div>
+  <h2 style="font-size:26px;margin-top:14px">${esc(r.n)} ${r.ai?'<span class="tag t-ai">ЗС</span>':''}</h2><p class="muted">${esc(r.d)}</p>
+  <div class="row" style="margin-top:10px;flex-wrap:wrap"><span class="tag t-ok">⏱ ${fmtT(r.t)}</span><span class="tag t-miss">${r.steps.length} қадам</span></div>
+  <h2>Маҳсулот</h2>
+  <div class="row"><span class="muted" style="flex:1">Барои чанд нафар?</span><button class="back" onclick="srv=Math.max(1,srv-1);render()">−</button><b style="font-size:20px;width:34px;text-align:center">${srv}</b><button class="back" onclick="srv=Math.min(30,srv+1);render()">+</button></div>
+  <div class="card" style="margin-top:10px;padding:6px 14px">${r.I.map(x=>`<div class="ing ${!have.has(x.id)&&S.have.length?'no':''}"><span class="e">${I(x.id)[1]}</span><span class="n">${I(x.id)[0]}${x.opt?' <span class="muted" style="font-size:12px">(ихтиёрӣ)</span>':''}</span><span class="q">${scaleQ(x.q,k)} ${esc(x.u)}</span></div>`).join('')}</div>
+  ${miss.length&&S.have.length?`<button class="btn light" style="margin-top:10px" onclick="addShop('${r.id}')">🛒 ${miss.length} маҳсулоти намерасидаро ба рӯйхати харид</button>`:''}
+  <h2>Тарзи пухтан</h2><div class="card">${r.steps.map((s,i)=>`<div class="step"><span class="no">${i+1}</span><div><div>${esc(s[0])}</div>${s[1]?`<div class="muted" style="font-size:12.5px;margin-top:2px">⏱ ${s[1]} дақ.</div>`:''}</div></div>`).join('')}</div>
+  <button class="btn" style="margin-top:14px" onclick="startCook()">👩‍🍳 Пухтанро сар кунем</button>
+  ${AI?`<button class="btn ghost" style="margin-top:8px" onclick="askAbout()">💬 Аз ошпаз пурсед: «Агар … набошад?»</button>`:''}
+  ${r.ai?`<button class="btn ghost" style="margin-top:8px" onclick="delAi('${r.id}')">🗑 Нест кардани ин дастур</button>`:''}</div>`;
+}
+function toggleFav(id){const i=S.fav.indexOf(id);if(i>=0)S.fav.splice(i,1);else{S.fav.unshift(id);toast('Ба дӯстдошта илова шуд ❤️')}save();render()}
+function addShop(id){const r=findR(id),have=new Set(S.have);let n=0;r.I.filter(x=>!x.opt&&!have.has(x.id)).forEach(x=>{const nm=I(x.id)[0];if(!S.shop.some(s=>s.n===nm&&!s.done)){S.shop.push({id:uid(),n:nm,e:I(x.id)[1],for:r.n,done:false});n++}});save();render();toast(n?'🛒 '+n+' маҳсулот илова шуд':'Аллакай дар рӯйхат ҳаст')}
+function delAi(id){S.ai=S.ai.filter(r=>r.id!==id);S.fav=S.fav.filter(x=>x!==id);save();view=null;render();toast('Нест карда шуд')}
+
+/* --- режими пухтан --- */
+function startCook(){cookSt={i:0,left:R.steps[0][1]*60,run:false};view='cook';render()}
+function cookView(){const r=R,s=r.steps[cookSt.i],last=cookSt.i===r.steps.length-1;
+  const mm=String(Math.floor(cookSt.left/60)).padStart(2,'0'),ss=String(cookSt.left%60).padStart(2,'0');
+  return `<div class="cook"><div class="row" style="justify-content:space-between"><b>${esc(r.n)}</b><button class="btn sm ghost" onclick="stopCook()">✕ Баромадан</button></div>
+  <div class="prog">${r.steps.map((_,i)=>`<i class="${i<=cookSt.i?'on':''}"></i>`).join('')}</div>
+  <div class="muted" style="color:#E9A23B;font-weight:900">ҚАДАМИ ${cookSt.i+1} АЗ ${r.steps.length}</div>
+  <div class="txt" style="margin-top:8px">${esc(s[0])}</div>
+  ${s[1]?`<div class="timer" id="tmr">${mm}:${ss}</div><button class="btn saff" onclick="tmToggle()">${cookSt.run?'⏸ Таваққуф':'▶ Таймер '+s[1]+' дақ.'}</button>`:''}
+  <div class="row" style="margin-top:12px"><button class="btn ghost" ${cookSt.i?'':'disabled'} onclick="cookGo(-1)">← Пеш</button>${last?`<button class="btn olive" onclick="doneCook()">✓ Пухтам!</button>`:`<button class="btn" onclick="cookGo(1)">Баъдӣ →</button>`}</div></div>`}
+function cookGo(d){clearInterval(timer);cookSt.i+=d;cookSt.left=R.steps[cookSt.i][1]*60;cookSt.run=false;render()}
+function tmToggle(){if(cookSt.run){clearInterval(timer);cookSt.run=false;render();return}cookSt.run=true;render();timer=setInterval(()=>{cookSt.left--;const el=document.getElementById('tmr');if(cookSt.left<=0){clearInterval(timer);cookSt.run=false;cookSt.left=0;try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}toast('⏰ Вақт тамом шуд!');render();return}if(el)el.textContent=String(Math.floor(cookSt.left/60)).padStart(2,'0')+':'+String(cookSt.left%60).padStart(2,'0')},1000)}
+function stopCook(){clearInterval(timer);view='rec';render()}
+function doneCook(){clearInterval(timer);const have=new Set(S.have);const used=R.I.filter(x=>have.has(x.id)).length;S.cooked++;S.used+=used;S.hist.unshift({n:R.n,ts:Date.now(),used});S.hist=S.hist.slice(0,30);save();view='rec';render();
+  openSheet(`<div style="text-align:center"><div style="font-size:60px">🎉</div><h1 style="font-size:24px">Нӯши ҷон!</h1><p class="muted" style="margin-top:6px">Шумо «${esc(R.n)}»-ро пухтед ва ${used} маҳсулоти хонаро истифода бурдед — онҳо ба партов нарафтанд.</p>
+  <div class="stats"><div class="stat"><b>${S.cooked}</b><span>таом пухта шуд</span></div><div class="stat"><b>${S.used}</b><span>маҳсулот наҷот ёфт</span></div><div class="stat"><b>${S.fav.length}</b><span>дӯстдошта</span></div></div>
+  <button class="btn" style="margin-top:16px" onclick="closeSheet()">Ташаккур!</button></div>`)}
+
+/* --- рӯйхати харид --- */
+function shopView(){
+  const open=S.shop.filter(s=>!s.done),done=S.shop.filter(s=>s.done);
+  return `<h2 style="margin-top:4px">Рӯйхати харид <span class="sub">${open.length}</span></h2>
+  <div class="row"><input type="text" id="ns" placeholder="Илова кардан: нон, шир…" onkeydown="if(event.key==='Enter')addItem()"><button class="btn sm" onclick="addItem()">＋</button></div>
+  ${S.shop.length?`<div class="card list" style="margin-top:12px;padding:4px 14px">${[...open,...done].map(s=>`<div class="li ${s.done?'done':''}" onclick="tgShop('${s.id}')"><span class="bx">${s.done?'✓':''}</span><span>${s.e||'🛒'} ${esc(s.n)}${s.for?` <span class="muted" style="font-size:12px">· ${esc(s.for)}</span>`:''}</span><button class="x" onclick="event.stopPropagation();delShop('${s.id}')">✕</button></div>`).join('')}</div>
+  <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="S.shop=S.shop.filter(s=>!s.done);save();render()">Тозаи харидашуда</button><button class="btn olive" onclick="boughtAll()">✓ Ба яхдон</button></div>
+  <p class="muted" style="margin-top:8px;font-size:12.5px">«Ба яхдон» — маҳсулоти харидашуда ба «Маҳсулоти ман» мегузаранд.</p>`
+  :`<div class="empty"><div class="e">🛒</div>Рӯйхат холӣ аст.<br>Дар саҳифаи дастур «ба рӯйхати харид»-ро пахш кунед.</div>`}`;
+}
+function addItem(){const el=document.getElementById('ns');const v=el.value.trim();if(!v)return;const id=Object.keys(ING).find(k=>ING[k][0].toLowerCase()===v.toLowerCase());S.shop.unshift({id:uid(),n:id?ING[id][0]:v,e:id?ING[id][1]:'🛒',done:false});save();render();setTimeout(()=>document.getElementById('ns').focus(),0)}
+function tgShop(id){const s=S.shop.find(x=>x.id===id);s.done=!s.done;save();render()}
+function delShop(id){S.shop=S.shop.filter(x=>x.id!==id);save();render()}
+function boughtAll(){let n=0;S.shop.filter(s=>s.done).forEach(s=>{const id=Object.keys(ING).find(k=>ING[k][0]===s.n);if(id&&!S.have.includes(id)){S.have.push(id);n++}});S.shop=S.shop.filter(s=>!s.done);save();render();toast(n?n+' маҳсулот ба яхдон гузашт':'Аввал харидашудаҳоро қайд кунед')}
+
+/* --- ЗС: дастури нав ва саволҳо --- */
+let gen={time:'any',kind:'any'};
+function aiView(){
+  let h=`<h2 style="margin-top:4px">✨ Ошпази ЗС</h2><p class="muted">ЗС аз маҳсулоти шумо дастури нав месозад — бештар таомҳои тоҷикӣ.</p>`;
+  if(!AI)return h+`<div class="warn" style="margin-top:12px">ЗС пайваст нест. ⚙️-ро дар боло пахш карда, суроғаи серверро гузоред. Бе ЗС ${RECIPES.length} дастури тайёр кор мекунанд.</div>`;
+  h+=`<div class="card" style="margin-top:12px"><b>Маҳсулот (${S.have.length})</b><div class="have" style="margin-top:8px">${S.have.length?S.have.map(id=>`<span class="chip"><span class="e">${I(id)[1]}</span>${I(id)[0]}</span>`).join(''):'<span class="muted">Аввал маҳсулотро интихоб кунед.</span>'}</div>
+  <label class="f">Вақт</label><div class="seg">${[['any','Фарқ надорад'],['fast','То 30 дақ.'],['slow','Бо истироҳат']].map(([k,l])=>`<button class="${gen.time===k?'on':''}" onclick="gen.time='${k}';render()">${l}</button>`).join('')}</div>
+  <label class="f">Намуд</label><div class="seg">${[['any','Ҳар чӣ'],['main','Таоми асосӣ'],['soup','Шӯрбо'],['light','Сабук']].map(([k,l])=>`<button class="${gen.kind===k?'on':''}" onclick="gen.kind='${k}';render()">${l}</button>`).join('')}</div>
+  <button class="btn saff" style="margin-top:14px" ${S.have.length&&!aiBusy?'':'disabled'} onclick="genRecipe()">${aiBusy?'⏳ Ошпаз фикр мекунад…':'✨ Дастури нав созед'}</button></div>`;
+  h+=`<h2>💬 Савол ба ошпаз</h2><div>${S.chat.slice(-8).map(m=>`<div class="bubble ${m.r==='u'?'me':'ai'}">${esc(m.t)}</div>`).join('')}${chatBusy?'<div class="bubble ai">…</div>':''}</div>
+  ${S.chat.length?'':`<div class="chips" style="margin:6px 0">${['Палов чаро часпак мешавад?','Ба ҷои гӯшт чӣ гузорам?','Нонро чӣ тавр тару тоза нигоҳ дорам?'].map(t=>`<span class="chip" onclick="ask('${t}')">${t}</span>`).join('')}</div>`}
+  <div class="row" style="margin-top:8px"><input type="text" id="cq" placeholder="Саволатонро нависед…" onkeydown="if(event.key==='Enter')ask()"><button class="btn sm" onclick="ask()">➤</button></div>
+  ${S.chat.length?`<button class="btn ghost sm" style="margin-top:8px" onclick="S.chat=[];save();render()">Тоза кардан</button>`:''}`;
+  return h;
+}
+async function genRecipe(){
+  if(!AI||!S.have.length)return;aiBusy=true;render();
+  const names=S.have.map(id=>I(id)[0]).join(', ');
+  const ids=Object.entries(ING).map(([id,v])=>id+'='+v[0]).join(', ');
+  const prompt=`Ту ошпази ботаҷрибаи тоҷик ҳастӣ. Дар хона ин маҳсулот ҳаст: ${names}. Намак, об ва ҳанутҳои оддӣ ҳаст ҳисоб мешаванд.
+${gen.time==='fast'?'Таом бояд то 30 дақиқа тайёр шавад. ':''}${gen.kind==='soup'?'Шӯрбо бошад. ':gen.kind==='main'?'Таоми асосӣ бошад. ':gen.kind==='light'?'Таоми сабук ё газак бошад. ':''}
+Як таоми воқеӣ ва маъмулро пешниҳод кун, беҳтараш таоми тоҷикӣ ё осиёимиёнагӣ, ки асосан аз ҳамин маҳсулот пухта мешавад (ба ғайр аз ${RECIPES.map(r=>r.n).join(', ')} — инҳо аллакай ҳастанд, агар таоми дигари мувофиқ бошад). Агар маҳсулот кам бошад, таоми содда пешниҳод кун. Миқдорҳо воқеӣ бошанд.
+Забон: тоҷикӣ (кириллӣ). Танҳо JSON:
+{"n":"номи таом","d":"як ҷумла","t":дақиқаҳо,"s":нафар,"ings":[{"id":"id аз рӯйхат ё other","name":"номи маҳсулот","q":"миқдор","u":"воҳид","opt":false}],"steps":[{"text":"қадам","min":дақиқа}],"kind":"rice|soup|bread|dough|salad|egg|sweet|fry|bean|stew|noodle"}
+Рӯйхати id: ${ids}.`;
+  try{const o=await AI.json(prompt,{modelTier:'default'});
+    if(!o||!o.n||!Array.isArray(o.steps)||!o.steps.length)throw {code:'bad'};
+    const id='ai'+uid();
+    const ings=(o.ings||[]).slice(0,16).map(x=>{let k=ING[x.id]?x.id:Object.keys(ING).find(z=>ING[z][0].toLowerCase()===String(x.name||'').toLowerCase());if(!k){k='x_'+String(x.name||'маҳсулот').slice(0,20);ING[k]=[String(x.name||'маҳсулот').slice(0,24),'🥄','pan']}return {id:k,q:String(x.q||'').slice(0,8),u:String(x.u||'').slice(0,12),opt:!!x.opt,nm:ING[k][0]}});
+    const pal={soup:['#D9822B','#E8C07A','#6B8E23'],rice:['#E7A64A','#D2691E','#8B4A2B'],salad:['#E0452B','#F6E7D8','#4E8B3A'],egg:['#F7D25A','#E0452B','#4E8B3A'],sweet:['#FAF3E6','#E9C98F','#C98B3A'],dough:['#E5B567','#C98B3A','#8B5A2B'],fry:['#E8B04A','#C9822E','#4E8B3A'],bean:['#D9B26A','#F6E7D8','#4E8B3A'],bread:['#F3EBDD','#C9A46A','#4E8B3A'],noodle:['#E2A548','#D04A2A','#4E8B3A'],stew:['#C8642F','#E9B35A','#6E8B3D']};
+    const kind=pal[o.kind]?o.kind:'stew';
+    const r={id,ai:true,n:String(o.n).slice(0,40),d:String(o.d||'').slice(0,160),t:Math.max(1,Math.min(600,+o.t||30)),s:Math.max(1,Math.min(20,+o.s||4)),art:[kind,...pal[kind]],
+      I:ings,steps:o.steps.slice(0,12).map(s=>[String(s.text||s).slice(0,300),Math.max(0,Math.min(240,+s.min||0))])};
+    r.ings=ings.map(x=>(x.opt?'*':'')+x.id+' '+x.q+' '+x.u).join('|');
+    S.ai.unshift(r);S.ai=S.ai.slice(0,30);save();aiBusy=false;openRec(id);toast('✨ Дастури нав: '+r.n);
+  }catch(e){aiBusy=false;render();toast(e&&e.code==='rate_limited'?'ЗС банд аст, баъдтар санҷед':'ЗС дастур сохта натавонист, боз санҷед')}
+}
+async function ask(t){
+  const el=document.getElementById('cq');t=t||(el&&el.value.trim());if(!t||!AI||chatBusy)return;
+  S.chat.push({r:'u',t});chatBusy=true;save();render();
+  const sys='Ту ошпази меҳрубони тоҷик ҳастӣ. Ба забони тоҷикӣ (кириллӣ), кӯтоҳ ва амалӣ ҷавоб деҳ (то 6 ҷумла). Маҳсулоти дар хона: '+(S.have.map(id=>I(id)[0]).join(', ')||'маълум нест')+'. Агар савол дар бораи саломатӣ ё аллергия бошад, бигӯ, ки бо духтур маслиҳат кунанд.';
+  const msgs=S.chat.slice(-8).map(m=>({role:m.r==='u'?'user':'assistant',content:m.t}));msgs[0]={role:'user',content:sys+'\n\n'+msgs[0].content};
+  try{const o=await AI(msgs,{modelTier:'default'});S.chat.push({r:'a',t:(o.text||'').trim()||'…'})}catch(e){S.chat.push({r:'a',t:'Бубахшед, ҳоло ҷавоб дода натавонистам. Баъдтар боз пурсед.'})}
+  chatBusy=false;save();render();window.scrollTo(0,document.body.scrollHeight);
+}
+function askAbout(){tab='ai';view=null;render();setTimeout(()=>{const el=document.getElementById('cq');if(el){el.value='«'+R.n+'»: агар '+'… набошад, ба ҷояш чӣ гузорам?';el.focus()}},50)}
+
+/* ===================== ЗС: ПАЙВАСТ ===================== */
+function remoteAI(url){
+  const toB64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(b)});
+  async function call(input,opts,mode){
+    opts=opts||{};const images=opts.images?await Promise.all(opts.images.map(toB64)):[];
+    const body={mode,images};if(typeof input==='string')body.prompt=input;else body.messages=input;
+    const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),90000);
+    let r;try{r=await fetch(url.replace(/\/$/,'')+'/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctl.signal})}
+    catch(e){throw {code:'network',message:'Пайваст нашуд'}}finally{clearTimeout(t)}
+    if(r.status===429)throw {code:'rate_limited'};
+    const j=await r.json().catch(()=>({}));if(!r.ok||j.error)throw {code:'server',message:j.error||('HTTP '+r.status)};
+    return {text:j.text||''};
+  }
+  const f=(input,opts)=>call(input,opts,'text');
+  f.json=async(input,opts)=>{const o=await call(input,opts,'json');const t=o.text;return JSON.parse(t.slice(t.indexOf('{'),t.lastIndexOf('}')+1))};
+  f.limits=async()=>({images:true});
+  return f;
+}
+function useRemote(){if(S.aiUrl){AI=remoteAI(S.aiUrl);AIimg=true;AIKIND='server'}else if(AIKIND==='server'){AI=null;AIimg=false;AIKIND=null}}
+function aiBadge(){return AI?(AIimg?'🟢 ЗС':'🟡 ЗС'):'⚪ ЗС'}
+function aiSettings(){
+  openSheet(`<h1 style="font-size:22px">⚙️ Танзимоти ЗС</h1>
+  <p class="muted" style="margin:6px 0 12px">${AIKIND==='claude'?'Ҳоло ЗС-и Claude истифода мешавад.':'Барои ЗС дар APK суроғаи сервери худро гузоред (Cloudflare Worker). Сервери Дарзӣ AI ҳам мувофиқ аст.'}</p>
+  <label class="f">Суроғаи сервер</label><input type="text" id="aiu" value="${esc(S.aiUrl||'')}" placeholder="https://….workers.dev">
+  <div class="row" style="margin-top:10px"><button class="btn" onclick="saveAiUrl()">Нигоҳ доштан ва санҷидан</button></div>
+  ${S.aiUrl?`<button class="btn ghost" style="margin-top:8px" onclick="S.aiUrl='';save();useRemote();closeSheet();render()">Хомӯш кардан</button>`:''}
+  <p class="muted" style="margin-top:12px;font-size:12.5px">Бе ЗС ҳам ${RECIPES.length} дастур, интихоби маҳсулот, режими пухтан ва рӯйхати харид кор мекунанд.</p>`);
+}
+async function saveAiUrl(){
+  let u=document.getElementById('aiu').value.trim().replace(/\s+/g,'').replace(/\/+$/,'').replace(/\/ai$/,'');
+  if(u&&!/^https?:\/\//.test(u))u='https://'+u;
+  if(u&&!/^https:\/\//.test(u)){aiDiag('Суроға бояд бо https:// сар шавад.');return}
+  document.getElementById('aiu').value=u;S.aiUrl=u;save();if(AIKIND!=='claude')useRemote();
+  if(!u){closeSheet();render();return}
+  aiDiag('⏳ Санҷиш 1/2: сервер ҳаст?');let g;
+  try{const r=await fetch(u+'/',{method:'GET'});g=await r.json().catch(()=>null)}
+  catch(e){aiDiag('❌ Ба сервер пайваст нашуд. Суроға ва интернетро санҷед.');return}
+  if(!g||!g.ok){aiDiag('❌ Сервер ҷавоб дод, вале коди ЗС нест. Дар Cloudflare коди worker.js-ро гузоред → Deploy.');return}
+  aiDiag('⏳ Санҷиш 2/2: калиди Gemini…');
+  try{const r=await remoteAI(u)('Танҳо калимаи «тайёр»-ро нависед.');closeSheet();render();toast('✅ ЗС пайваст шуд')}
+  catch(e){const m=String(e.message||e.code||'');aiDiag('❌ Gemini ҷавоб надод.<br><b>Хато:</b> '+esc(m)+'<br>'+(/GEMINI_KEY/.test(m)?'→ Дар Cloudflare GEMINI_KEY-ро илова кунед.':/API key|invalid/i.test(m)?'→ Калиди Gemini нодуруст аст.':/high demand|overloaded|busy|unavailable/i.test(m)?'→ Калид дуруст аст ✅. Gemini ҳоло банд аст — баъдтар санҷед.':e.code==='rate_limited'?'→ Лимит тамом шуд, 1 дақиқа баъд.':'→ Ин хаторо нигоҳ доред.'))}
+}
+function aiDiag(h){let el=document.getElementById('aidiag');if(!el){el=document.createElement('div');el.id='aidiag';el.className='warn';el.style.marginTop='10px';const b=document.getElementById('aiu');b.parentNode.insertBefore(el,b.nextSibling)}el.innerHTML=h}
+
+/* ===================== RENDER ===================== */
+const TABS=[['home','🧺','Яхдон'],['recipes','📖','Дастурҳо'],['shop','🛒','Харид'],['ai','✨','Ошпази ЗС']];
+function render(){
+  document.getElementById('aist').textContent=aiBadge()+' ⚙️';
+  const a=document.getElementById('app');
+  let h;
+  if(view==='pick')h=pickView();else if(view==='scan')h=scanView();else if(view==='rec')h=recView();else if(view==='cook')h=recView()+cookView();
+  else h=({home,recipes:recipesView,shop:shopView,ai:aiView})[tab]();
+  a.innerHTML=h;
+  const shopN=S.shop.filter(s=>!s.done).length;
+  document.getElementById('nav').innerHTML=TABS.map(([k,i,l])=>`<button class="${tab===k&&!view?'on':''}" onclick="tab='${k}';view=null;render();scrollTo(0,0)"><span class="i">${i}</span>${l}${k==='shop'&&shopN?`<span class="dot">${shopN}</span>`:''}</button>`).join('');
+}
+(async()=>{await new Promise(r=>setTimeout(r,0));let got=false;try{if(window.claude&&claude.use){const s=await claude.use('sample');if(s){AI=s;AIKIND='claude';got=true;try{const l=await s.limits();AIimg=!!(l&&l.images)}catch(e){AIimg=false}}}}catch(e){}
+  if(!got)useRemote();render()})();
+render();
+if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.claude)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
